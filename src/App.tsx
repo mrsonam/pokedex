@@ -1,24 +1,18 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import GenerationDropdown from './components/GenerationDropdown';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const pokemon = useSelector((state: any) => state.pokemon);
+
+  console.log(pokemon);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="w-screen h-screen p-10">
+      <div className="flex items-center gap-2">
+        <p>Filter:</p>
+        <GenerationDropdown />
+      </div>
     </div>
   );
 }
