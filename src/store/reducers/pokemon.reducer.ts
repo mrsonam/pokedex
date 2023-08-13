@@ -16,7 +16,7 @@ export const pokemonReducer = (
 ): PokemonState => {
   switch (action.type) {
     case ActionTypes.ADD_POKEMON:
-      if (state.party.length < 6) {
+      if (state.party.length < 6 && !state.party.includes(action.payload)) {
         return {
           ...state,
           party: [...state.party, action.payload],
