@@ -1,19 +1,45 @@
-import {
-  IGenerationWithPokemons,
-  IPokemon,
-} from '../../interface/pokemon.interface';
+import { ActionTypes } from '../../enum/pokemon.enum';
+import { IPokemonsByGeneration } from '../../interface/pokemon.interface';
 
-export const addPokemon = (pokemon: IPokemon) => {
-  return {
-    type: 'ADD_POKEMON',
-    payload: pokemon,
-  };
-};
+interface AddPokemonAction {
+  type: ActionTypes.ADD_POKEMON;
+  payload: IPokemonsByGeneration; // Pokémon object
+}
 
-export const addPokemonsToGeneration = (payload: IGenerationWithPokemons) => {
-  console.log(payload)
-  return {
-    type: 'ADD_POKEMONS_TO_GENERATION',
-    payload: payload,
+interface ReplacePokemonAction {
+  type: ActionTypes.REPLACE_POKEMON;
+  payload: {
+    pokemonId: number; // ID of the Pokémon to replace
+    newPokemon: IPokemonsByGeneration; // Pokémon object
   };
-};
+}
+
+interface RemovePokemonAction {
+  type: ActionTypes.REMOVE_POKEMON;
+  payload: number;
+}
+
+export type Action =
+  | AddPokemonAction
+  | ReplacePokemonAction
+  | RemovePokemonAction;
+
+export const addPokemon = (
+  pokemon: IPokemonsByGeneration,
+): AddPokemonAction => ({
+  type: ActionTypes.ADD_POKEMON,
+  payload: pokemon,
+});
+
+export const replacePokemon = (
+  pokemonId: number,
+  newPokemon: IPokemonsByGeneration,
+): ReplacePokemonAction => ({
+  type: ActionTypes.REPLACE_POKEMON,
+  payload: { pokemonId, newPokemon },
+});
+
+export const removePokemon = (id: number): RemovePokemonAction => ({
+  type: ActionTypes.REMOVE_POKEMON,
+  payload: id,
+});

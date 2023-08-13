@@ -1,52 +1,49 @@
-import { IPokemon } from '../../interface/pokemon.interface';
+import { ActionTypes } from '../../enum/pokemon.enum';
+import { IPokemonsByGeneration } from '../../interface/pokemon.interface';
+import { Action } from './pokemon.action';
 
-interface Generation {
-  generation: number;
-  pokemons: IPokemon[];
+export interface PokemonState {
+  party: IPokemonsByGeneration[]; // Array of Pokémon names or IDs
 }
 
-interface GenerationState {
-  generations: Generation[];
-}
-
-const initialState: GenerationState = {
-  generations: [],
+const initialState: PokemonState = {
+  party: [],
 };
 
-const generationReducer = (
+export const pokemonReducer = (
   state = initialState,
-  action: any,
-): GenerationState => {
+  action: Action,
+): PokemonState => {
   switch (action.type) {
-    case 'ADD_POKEMONS_TO_GENERATION':
-      const { generation, pokemons } = action.payload;
-      const existingGenerationIndex = state.generations.findIndex(
-        (gen) => gen.generation === generation,
-      );
-
-      if (existingGenerationIndex !== -1) {
-        const updatedGenerations = state.generations.map((gen, index) => {
-          if (index === existingGenerationIndex) {
-            return {
-              ...gen,
-              pokemons,
-            };
-          }
-          return gen;
-        });
+    case ActionTypes.ADD_POKEMON:
+      if (state.party.length < 6) {
         return {
           ...state,
-          generations: updatedGenerations,
-        };
-      } else {
-        return {
-          ...state,
-          generations: [...state.generations, { generation, pokemons }],
+          party: [...state.party, action.payload],
         };
       }
+      return state;
+
+    case ActionTypes.REPLACE_POKEMON:
+      const { pokemonId, newPokemon } = action.payload;
+      const updatedParty = [...state.party];
+      updatedParty.some((party) => pokemonId !== party.id);
+      updatedParty.push(newPokemon);
+      return {
+        ...state,
+        party: updatedParty,
+      };
+
+    case ActionTypes.REMOVE_POKEMON:
+      const filteredParty = state.party.filter(
+        (pokemon) => pokemon.id !== action.payload,
+      );
+      return {
+        ...state,
+        party: filteredParty,
+      };
+
     default:
       return state;
   }
 };
-
-export default generationReducer;

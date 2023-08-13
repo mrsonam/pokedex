@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { IGeneration } from '../interface/pokemon.interface';
 import { Select, Option } from '@material-tailwind/react';
-import {
-  getPokemonGenerations,
-  getPokemonsByGeneration,
-} from '../services/pokemon.service';
-import { useDispatch } from 'react-redux';
-import { addPokemonsToGeneration } from '../store/reducers/pokemon.action';
+import { getPokemonGenerations } from '../services/pokemon.service';
 
-const GenerationDropdown: React.FC = () => {
+interface IProps {
+  handleSelectGeneration: (generationId: number) => void;
+}
+
+const GenerationDropdown: React.FC<IProps> = ({ handleSelectGeneration }) => {
   const [generations, setGenerations] = useState<IGeneration[]>([]);
-  const dispatch = useDispatch();
 
   const getGenerations = async () => {
     const [response, error] = await getPokemonGenerations();
@@ -19,31 +17,16 @@ const GenerationDropdown: React.FC = () => {
     }
   };
 
-  const handleSelectGeneration = async (generationId: number) => {
-    const [response, error] = await getPokemonsByGeneration(generationId);
-    // if (response?.pokemons?.length > 0) {
-    //   console.log(response);
-    //   dispatch(addPokemonsToGeneration(response));
-    // }
-    if (response) {
-      const payload = {
-        generation: generationId,
-        pokemons: response,
-      };
-      console.log(payload)
-      dispatch(addPokemonsToGeneration(payload));
-    }
-  };
-
   useEffect(() => {
     getGenerations();
   }, []);
 
   return (
-    <div>
-      <Select label="Select Generation" className="uppercase">
+    <div className="w-full sm:w-1/2 md:w-1/3 max-w-[500px]">
+      <Select label="Select Generation" className="uppercase" size="lg">
         {generations?.map((option, index) => (
           <Option
+            key={index}
             className="uppercase text-left"
             onClick={() => handleSelectGeneration(index + 1)}
           >

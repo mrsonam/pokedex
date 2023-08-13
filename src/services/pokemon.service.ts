@@ -1,8 +1,4 @@
-import {
-  IGeneration,
-  IGenerationWithPokemons,
-  IPokemon,
-} from '../interface/pokemon.interface';
+import { IGeneration, IPokemon } from '../interface/pokemon.interface';
 import { extractIdFromUrl } from '../utils/pokemon.util';
 import { pokemonApiInstance } from './axios';
 
@@ -24,23 +20,15 @@ export const getPokemonsByGeneration = async (
     const response = await pokemonApiInstance.get(
       `/generation/${generationId}`,
     );
-    // const pokemonInGeneration: IPokemon[] = [];
-    // response.data?.pokemon_species?.forEach(async (species: any) => {
-    //   const [response] = await getPokemonByName(species?.name);
-    //   if (response) {
-    //     pokemonInGeneration.push(response);
-    //   }
-    // });
-    // const generationData: IGenerationWithPokemons = {
-    //   generation: generationId,
-    //   pokemons: pokemonInGeneration,
-    // };
     const parsedResponse: any = [];
     response.data?.pokemon_species?.forEach(
       (species: { name: string; url: string }) => {
         parsedResponse.push({
-          ...species,
+          name: species.name,
           id: extractIdFromUrl(species?.url),
+          imgUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${extractIdFromUrl(
+            species?.url,
+          )}.png`,
         });
       },
     );
@@ -56,6 +44,27 @@ export const getPokemonByName = async (
   try {
     const response = await pokemonApiInstance.get(`/pokemon/${pokemon}`);
     return [response.data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+};
+
+export const getPokemonById = async (
+  pokemonId: number,
+): Promise<[any | null, any]> => {
+  try {
+    const response = await pokemonApiInstance.get(`/pokemon/${pokemonId}`);
+    const data = response.data;
+    const result: IPokemon = {
+      name: data.name,
+      imgUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`,
+      id: data.id,
+      types: data.types.map((type: any) => type.type.name),
+      base_experience: data.base_experience,
+      height: data.height,
+      weight: data.weight,
+    };
+    return [result, null];
   } catch (error: any) {
     return [null, error];
   }
