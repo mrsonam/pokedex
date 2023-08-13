@@ -70,7 +70,7 @@ function App() {
       >
         <div
           id="alert-container"
-          className="absolute z-[999] right-2 w-full sm:w-1/2"
+          className="absolute z-[99999] right-2 w-full sm:w-1/2"
         >
           <Alert
             open={alertData?.open}

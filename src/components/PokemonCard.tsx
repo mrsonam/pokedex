@@ -52,10 +52,7 @@ const PokemonCard: React.FC<IProps> = ({
   };
 
   return (
-    <Card
-      className="mt-6 cursor-pointer"
-      // onClick={() => handleDetailsClick(pokemon.id)}
-    >
+    <Card className="mt-6">
       <CardHeader color="blue-gray" className="relative min-h-56">
         {!imageLoaded && (
           <div className="animate-pulse bg-gray-800 w-full h-full" />
@@ -64,6 +61,8 @@ const PokemonCard: React.FC<IProps> = ({
           src={pokemon?.imgUrl}
           alt={pokemon?.name}
           onLoad={handleImageLoad}
+          onClick={() => handleDetailsClick(pokemon.id)}
+          className="cursor-pointer"
           style={{
             display: imageLoaded ? 'block' : 'none',
           }}

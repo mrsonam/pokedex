@@ -49,6 +49,7 @@ const PokemonDetails: React.FC<IProps> = ({
 
   const handleAddToParty = () => {
     if (party?.length < 6) {
+      setOpen(false);
       const payload: IPokemonsByGeneration = {
         name: pokemon?.name as string,
         id: pokemon?.id as number,
